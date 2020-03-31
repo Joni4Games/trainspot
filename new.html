@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="de" dir="ltr">
+  <head>
+    <meta charset="utf-8">
+    <title>trainspot</title>
+    <link rel="shortcut icon" href="img/favicon.png">
+    <link rel="icon" type="image/png" href="img/favicon.png" sizes="512x512">
+    <link rel="stylesheet" href="css/bootstrap.min.css"> <!--Bootstrap-->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css"> <!--FontAwesome-->
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.5.1/dist/leaflet.css" integrity="sha512-xwE/Az9zrjBIphAcBb3F6JVqxf46+CDLwfLMHloNu6KEQCAWi6HcDUbeOfBIptF7tcCzusKFjFw2yuvEpDL9wQ==" crossorigin=""/> <!--Leaflet-->
+    <link rel="stylesheet" href="css/css.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/js/bootstrap.bundle.min.js"></script>
+    <meta name="description" content="" />
+    <meta name="robots" content="nofollow" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <script src="https://unpkg.com/leaflet@1.5.1/dist/leaflet.js" integrity="sha512-GffPMF3RvMeYyc1LWMHtK8EbPv0iNZ8/oTtHPx9/cc2ILxQ+u905qIwdpULaqDkyBKgOaB57QTMg7ztg8Jm2Og==" crossorigin=""></script>
+    <script src="https://cdn.jsdelivr.net/npm/leaflet-providers@1.9.0/leaflet-providers.min.js"></script>
+    <!--Eigene Scripts-->
+    <script src="js/markerColoured.js"></script>
+  </head>
+  <body>
+    <nav class="navbar navbar-expand-sm navbar-default fixed-top">
+        <ul class="nav navbar-nav">
+          <a class="navbar-brand" href="index.php" style="font-family: 'Gill Sans', 'Gill Sans MT', Calibri, 'Trebuchet MS', sans-serif;">Trainspot</a>
+        </ul>
+        <ul class="nav navbar-expand-sm navbar-right">
+          <li class="nav-item">
+            <a class="nav-link" href="new.html">Neu</a>
+          </li>
+        </ul>
+      </nav>
+      <!-- modal -->
+    <div class="modal fade" id="exifModal" tabindex="-1" role="dialog" style="padding-top: 50px;"aria-labelledby="efixModalLabel" aria-hidden="true">
+        <div class="modal-dialog" role="document">
+          <div class="modal-content">
+            <div class="modal-header">
+              <h5 class="modal-title" id="efixModalLabel">EXIF-Daten als Koordinaten verwenden</h5>
+              <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                <span aria-hidden="true">&times;</span>
+              </button>
+            </div>
+            <div class="modal-body">
+              <p>Wenn deine Kamera oder dein Smartphone bereits Koordinaten in deinem Bild gespeichert hat, dann werden diese statt den von dir auf der Karte ausgewählten verwendet.</p>
+            </div>
+            <div class="modal-footer">
+              <button type="button" class="btn btn-success" data-dismiss="modal">Verstanden</button>
+            </div>
+          </div>
+        </div>
+      </div>
+      <!--body-->
+      <section class="jumbotron text-center" style="margin-top: 50px;">
+        <div class="container">
+          <h1 class="jumbotron-heading">Sichtung hochladen</h1>
+          <p class="lead text-muted">Hier kannst du eigene Sichtungen und Bilder einreichen.</p>
+        </section>
+        <div class="row" style="overflow: hidden;">
+            <div class="col-lg-3">
+
+            </div>
+            <div class="col-lg-6 text-left grid" style="background-color: white; padding-top: 0px; margin-top: 0px;">
+                <form action="upload.php" method="POST" enctype="multipart/form-data">
+                    <!--Dateiupload-->
+                    <label for="input1" class="mb-6 mr-sm-2">Bild hochladen</label>
+                    <div class="input-group mb-3" id="input1">
+                            <div class="input-group-prepend">
+                              <span class="input-group-text">Hochladen</span>
+                            </div>
+                            <div class="custom-file">
+                              <input type="file" class="custom-file-input" id="inputGroupFile01" name="file" required>
+                              <label class="custom-file-label" for="inputGroupFile01">Hier klicken, Datei aussuchen</label>
+                            </div>
+                          </div>
+                    <!--Titel-->
+                    <div class="form-group mb-3">
+                        <label for="title" class="mb-6 mr-sm-2">Titel</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="title" name="title" placeholder='z.B. "Taurus am Abzweig Musterstadt in der Abendsonne"' required>
+                    </div>
+                    <!--Unterschrift-->
+                    <div class="form-group mb-3">
+                        <label for="text" class="mb-6 mr-sm-2">Bildunterschrift</label>
+                        <input type="text" class="form-control mb-2 mr-sm-2" id="text" name="subtitle" placeholder='z.B. "Dieses Bild entstand, als auf der Strecke noch Personenverkehr stattfand."'>
+                    </div>
+                    <!--Baureihe-->
+                    <label for="text" class="mb-6 mr-sm-2">Baureihe (z.B. 672-916)</label>
+                    <div class="input-group mb-3">
+                        <div class="input-group-prepend">
+                            <span class="input-group-text">BR</span>
+                        </div>
+                        <input type="text" class="form-control" id="br" name="br1" placeholder="z.B. 672" required>
+                        <div class="input-group-prepend input-group-append">
+                                <span class="input-group-text">–</span>
+                            </div>
+                        <input type="text" class="form-control" id="br" name="br2" placeholder="z.B. 916">
+                    </div>
+                    <!--Karte-->
+                    <div class="form-group mb-3">
+                        <label for="mymap" class="mb-6 mr-sm-2">Karte <a href="#exifModal" data-toggle="modal" data-target="#exifModal">(Stattdessen Koordinaten aus EXIF-Daten verwenden?)</a></label>
+                        <div id="mymap" style="height: 400px; width: full;"></div>
+                        <p id="address">Klicke, um die Addresse auszuwählen. Dabei zählt nicht die genaue Addresse, sondern die möglichst genauen Koordinaten.</p>
+                        <input type="hidden" id="hiddenAddress" name="address" value="">
+                        <input type="hidden" id="inputLat" name="lat" value="">
+                        <input type="hidden" id="inputLong" name="long" value="">
+                    </div>
+                    <p>
+                        <button type="submit" class="btn btn-primary my-2" value="Submit">Einreichen</button>
+                        <a href="index.php" class="btn btn-secondary my-2" value="Abbrechen">Abbrechen</a>
+                    </p>
+                </form>
+            </div>
+            <div class="col-lg-3">
+                
+            </div>
+        </div>
+    </div>
+  </body>
+</html>
+
+
+
+<script>
+var markerSet = 0;
+var mymap = L.map('mymap').setView([50.885708708915175, 10.409545898437498], 7);
+L.tileLayer.provider('OpenStreetMap.DE', {
+                'attribution':  'Kartendaten &copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> Mitwirkende',
+                'useCache': true
+        }).addTo(mymap);
+L.tileLayer.provider('OpenRailwayMap', {
+        'attribution':  '&copy; <a href="https://www.openstreetmap.org/copyright">OpenRailwayMap</a> Mitwirkende',
+        'useCache': true
+}).addTo(mymap);
+window.onload = function() { mymap.invalidateSize(); };
+
+mymap.on('click', function(e){
+    //handle click, get coordinates
+    var coord = e.latlng;
+    var lat = coord.lat;
+    var lng = coord.lng;
+    console.log("You clicked the map at latitude: " + lat + " and longitude: " + lng);
+    //add marker
+    if (markerSet == 0) {
+        marker = L.marker([lat, lng]).addTo(mymap);
+        markerSet = 1;
+    } else {
+        mymap.removeLayer(marker);
+        marker = L.marker([lat, lng]).addTo(mymap);
+    }
+    //add coordinates into form
+    document.getElementById("inputLat").value = lat;
+    document.getElementById("inputLong").value = lng;
+    //fetch address from API
+    fetch('https://nominatim.openstreetmap.org/reverse?lat=' + lat + '&lon=' + lng + '&format=json')
+        .then(
+            function(response) {
+                if (response.status !== 200) {
+                    alert('Problem beim Auflösen der Koordinaten. Error: ' + response.status);
+                    return;
+                }
+                response.json().then(function(data) {
+                    console.log(data);
+                    var name = data['display_name'];
+                    console.log(name);
+                    //show address and add into form
+                    document.getElementById("address").innerHTML = name;
+                    document.getElementById("hiddenAddress").value = name;
+                })
+            }
+        )    
+  });
+</script>
+<style>
+    body {
+      padding: 0;
+      margin: 0;
+    }
+    html, body, #map {
+        overflow-x: hidden;
+    }
+
+    .grid {
+        margin-left: 15px;
+        margin-right: 15px;
+        width: 100%
+    }
+</style>
